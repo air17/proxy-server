@@ -15,8 +15,12 @@ def add_trademark(document: str) -> str:
     soup = BeautifulSoup(document, features="lxml")
     word_elements = soup.find_all(text=six_letters_word)
     for el in word_elements:
-        end_of_word = six_letters_word.search(str(el)).end()
-        new_text = el[:end_of_word] + "™" + el[end_of_word:]
+        new_text = str(el)
+        word = six_letters_word.search(new_text)
+        while word:
+            end_of_word = word.end()
+            new_text = new_text[:end_of_word] + "™" + new_text[end_of_word:]
+            word = six_letters_word.search(new_text, pos=end_of_word)
         el.replace_with(new_text)
 
     return str(soup)
